@@ -3,7 +3,9 @@
     To run: node jsonParse.js [JSON source file] [options: contact|address|account|customer]
     Result is printed out on console.
 */
-var fs = require('fs');
+var fs = require('fs'),
+    JSONStream = require('JSONStream'),
+    es = require('event-stream');
 
 if (!process.argv[2]) {
   console.log('Please specify the source file in the following format:');
@@ -11,10 +13,15 @@ if (!process.argv[2]) {
   process.exit();
 }
 
-fs.readFile(process.argv[2], function (err, data) {
-  var file = JSON.parse(data);
+var getStream = function() {
+  var jsonData = process.argv[2],
+      stream = fs.createReadStream(jsonData, {encoding: 'utf8'}),
+      parser = JSONStream.parse('*');
+  return stream.pipe(parser);
+}
 
-  var numRecords = file.Accounts.Customer.length;
+getStream().pipe(es.mapSync(function (data) {
+  var numRecords = data.Customer.length;
   if (process.argv[4] < numRecords) {
     numRecords = process.argv[4];
   }
@@ -26,31 +33,30 @@ fs.readFile(process.argv[2], function (err, data) {
         if (i%10 == 0){
           console.log('Parsing the record #'+i);
         }
-        extractContact(file.Accounts.Customer[i]);
+        extractContact(data.Customer[i]);
       }
       break;
     case 'address':
       addressHeader();
       for (var i=0; i<numRecords; i++){
-        extractAddress(file.Accounts.Customer[i]);
+        extractAddress(data.Customer[i]);
       }
       break;
     case 'account':
       accountHeader();
       for (var i=0; i<numRecords; i++){
-        extractAccount(file.Accounts.Customer[i]);
+        extractAccount(data.Customer[i]);
       }
       break;
     default:
       // return customer information
       customerHeader();
       for (var i=0; i<numRecords; i++){
-        extractCustomer(file.Accounts.Customer[i]);
+        extractCustomer(data.Customer[i]);
       }
       break;
   }
-
-});
+}));
 
 function contactHeader(){
   console.log(
@@ -65,14 +71,14 @@ function contactHeader(){
 function extractContact(customer){
   for (var i=0; i<customer.Contact.length; i++){
     var contact = customer.Contact[i];
-  //   console.log(
-  //     customer.AccountHolderId + ', ' +
-  //     contact.DebtorTelNo_TelNo + ', ' +
-  //     contact.DebtorTelNo_TypeId + ', ' +
-  //     contact.DebtorTelNo_PrimaryFlag + ', ' +
-  //     contact.DebtorTelNo_TelPtr + ', ' +
-  //     contact.DebtorTelNo_Superseded);
-   }
+    // console.log(
+    //   customer.AccountHolderId + ', ' +
+    //   contact.DebtorTelNo_TelNo + ', ' +
+    //   contact.DebtorTelNo_TypeId + ', ' +
+    //   contact.DebtorTelNo_PrimaryFlag + ', ' +
+    //   contact.DebtorTelNo_TelPtr + ', ' +
+    //   contact.DebtorTelNo_Superseded);
+  }
 }
 
 function addressHeader(){
