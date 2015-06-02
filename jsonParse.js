@@ -1,21 +1,45 @@
+/*
+    jsonParse.js
+    To run: node jsonParse.js [JSON source file] [options: contact|address|account|customer]
+    Result is printed out on console.
+*/
+
 var fs = require('fs');
 fs.readFile(process.argv[2], function (err, data) {
   var file = JSON.parse(data);
   // console.log(file.Accounts.Customer);
 
-  // addressHeader();
-  // telHeader();
-  accountHeader();
-  // customerHeader();
-  for (var i=0; i<file.Accounts.Customer.length; i++){
-    // extractTel(file.Accounts.Customer[i]);
-    // extractAddress(file.Accounts.Customer[i]);
-    // extractAccount(file.Accounts.Customer[i]);
-    // extractCustomer(file.Accounts.Customer[i]);
+  switch (process.argv[3]) {
+    case 'contact':
+      contactHeader();
+      for (var i=0; i<file.Accounts.Customer.length; i++){
+        extractContact(file.Accounts.Customer[i]);
+      }
+      break;
+    case 'address':
+      addressHeader();
+      for (var i=0; i<file.Accounts.Customer.length; i++){
+        extractAddress(file.Accounts.Customer[i]);
+      }
+      break;
+    case 'account':
+      accountHeader();
+      for (var i=0; i<file.Accounts.Customer.length; i++){
+        extractAccount(file.Accounts.Customer[i]);
+      }
+      break;
+    default:
+      // return customer information
+      customerHeader();
+      for (var i=0; i<file.Accounts.Customer.length; i++){
+        extractCustomer(file.Accounts.Customer[i]);
+      }
+      break;
   }
+
 });
 
-function telHeader(){
+function extractContact(){
   console.log(
     'AccountHolderId' + ', ' +
     'TelNo' + ', ' +
@@ -55,8 +79,14 @@ function addressHeader(){
 }
 
 function extractAddress(customer){
+
   for (var i=0; i<customer.Address.length; i++){
     var contact = customer.Address[i];
+    // console.log(contact);
+    // contact.forEach(function(key, value){
+    //   console.log(value);
+    // });
+
     console.log(
       customer.AccountHolderId + ', ' +
       contact.Address_AddressPtr + ', ' +
