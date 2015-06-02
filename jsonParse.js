@@ -13,7 +13,6 @@ if (!process.argv[2]) {
 
 fs.readFile(process.argv[2], function (err, data) {
   var file = JSON.parse(data);
-  // console.log(file.Accounts.Customer);
 
   var numRecords = file.Accounts.Customer.length;
   if (process.argv[4] < numRecords) {
@@ -50,7 +49,7 @@ fs.readFile(process.argv[2], function (err, data) {
 
 });
 
-function extractContact(){
+function contactHeader(){
   console.log(
     'AccountHolderId' + ', ' +
     'TelNo' + ', ' +
@@ -60,7 +59,7 @@ function extractContact(){
     'Superseded');
 }
 
-function extractTel(customer){
+function extractContact(customer){
   for (var i=0; i<customer.Contact.length; i++){
     var contact = customer.Contact[i];
     console.log(
