@@ -21,11 +21,8 @@ fs.readFile(process.argv[2], function (err, data) {
 
   switch (process.argv[3]) {
     case 'contact':
-//      contactHeader();
+      contactHeader();
       for (var i=0; i<numRecords; i++){
-        if (i%10 == 0){
-          console.log('Parsing the record #'+i);
-        }
         extractContact(file.Accounts.Customer[i]);
       }
       break;
@@ -65,14 +62,14 @@ function contactHeader(){
 function extractContact(customer){
   for (var i=0; i<customer.Contact.length; i++){
     var contact = customer.Contact[i];
-  //   console.log(
-  //     customer.AccountHolderId + ', ' +
-  //     contact.DebtorTelNo_TelNo + ', ' +
-  //     contact.DebtorTelNo_TypeId + ', ' +
-  //     contact.DebtorTelNo_PrimaryFlag + ', ' +
-  //     contact.DebtorTelNo_TelPtr + ', ' +
-  //     contact.DebtorTelNo_Superseded);
-   }
+    console.log(
+      customer.AccountHolderId + ', ' +
+      contact.DebtorTelNo_TelNo + ', ' +
+      contact.DebtorTelNo_TypeId + ', ' +
+      contact.DebtorTelNo_PrimaryFlag + ', ' +
+      contact.DebtorTelNo_TelPtr + ', ' +
+      contact.DebtorTelNo_Superseded);
+  }
 }
 
 function addressHeader(){
