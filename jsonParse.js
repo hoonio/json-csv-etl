@@ -3,35 +3,46 @@
     To run: node jsonParse.js [JSON source file] [options: contact|address|account|customer]
     Result is printed out on console.
 */
-
 var fs = require('fs');
+
+if (!process.argv[2]) {
+  console.log('Please specify the source file in the following format:');
+  console.log('node jsonParse.js [JSON source file] [options: contact|address|account|customer] [number of records to print]');
+  process.exit();
+}
+
 fs.readFile(process.argv[2], function (err, data) {
   var file = JSON.parse(data);
   // console.log(file.Accounts.Customer);
 
+  var numRecords = file.Accounts.Customer.length;
+  if (process.argv[4] < numRecords) {
+    numRecords = process.argv[4];
+  }
+
   switch (process.argv[3]) {
     case 'contact':
       contactHeader();
-      for (var i=0; i<file.Accounts.Customer.length; i++){
+      for (var i=0; i<numRecords; i++){
         extractContact(file.Accounts.Customer[i]);
       }
       break;
     case 'address':
       addressHeader();
-      for (var i=0; i<file.Accounts.Customer.length; i++){
+      for (var i=0; i<numRecords; i++){
         extractAddress(file.Accounts.Customer[i]);
       }
       break;
     case 'account':
       accountHeader();
-      for (var i=0; i<file.Accounts.Customer.length; i++){
+      for (var i=0; i<numRecords; i++){
         extractAccount(file.Accounts.Customer[i]);
       }
       break;
     default:
       // return customer information
       customerHeader();
-      for (var i=0; i<file.Accounts.Customer.length; i++){
+      for (var i=0; i<numRecords; i++){
         extractCustomer(file.Accounts.Customer[i]);
       }
       break;
