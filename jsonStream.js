@@ -5,56 +5,58 @@
     Result is printed out on console.
 */
 var fs = require('fs'),
-    JSONStream = require('JSONStream'),
-    es = require('event-stream');
+    readline = require('linebyline');
 
 if (!process.argv[2]) {
   console.log('Please specify the source file in the following format:');
-  console.log('node jsonParse.js [JSON source file] [options: contact|address|account|customer] [number of records to print]');
+  console.log('node jsonParse.js [JSON source file] [options: contact|address|account|customer]git');
   process.exit();
 }
 
-var getStream = function() {
-  var jsonData = process.argv[2],
-      stream = fs.createReadStream(jsonData, {encoding: 'utf8'}),
-      parser = JSONStream.parse('*');
-  return stream.pipe(parser);
-}
+  var jsonData = process.argv[2];
+  printHeader(process.argv[3]);
 
-getStream().pipe(es.mapSync(function (data) {
-  var numRecords = data.Customer.length;
-  if (process.argv[4] < numRecords) {
-    numRecords = process.argv[4];
-  }
+  // parse line by line here
+  var rl = readline(jsonData);
+  rl.on('line', function(line, lineCount, byteCount) {
+    // console.log('Parsing line #'+lineCount+', reading '+byteCount);
+    var regex = /({"AccountHolderId":.*"}]})([,|(\]}})?]*$)/i;
+    var jsonLine = line.match(regex);
+    var jsonObject = JSON.parse(jsonLine[1]);
 
-  switch (process.argv[3]) {
+    switch (process.argv[3]) {
+      case 'contact':
+        extractContact(jsonObject);
+        break;
+      case 'address':
+        extractAddress(jsonObject);
+        break;
+      case 'account':
+        extractAccount(jsonObject);
+        break;
+      default:
+        // return customer information
+        extractCustomer(jsonObject);
+        break;
+    }
+  })
+
+function printHeader(dataType){
+  switch (dataType) {
     case 'contact':
       contactHeader();
-      for (var i=0; i<numRecords; i++){
-        extractContact(data.Customer[i]);
-      }
       break;
     case 'address':
       addressHeader();
-      for (var i=0; i<numRecords; i++){
-        extractAddress(data.Customer[i]);
-      }
       break;
     case 'account':
       accountHeader();
-      for (var i=0; i<numRecords; i++){
-        extractAccount(data.Customer[i]);
-      }
       break;
     default:
       // return customer information
       customerHeader();
-      for (var i=0; i<numRecords; i++){
-        extractCustomer(data.Customer[i]);
-      }
-      break;
   }
-}));
+}
 
 function contactHeader(){
   console.log(
