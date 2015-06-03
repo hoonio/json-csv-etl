@@ -1,6 +1,6 @@
 /*
     jsonParse.js
-    To run: node jsonParse.js [JSON source file] [options: contact|address|account|customer]
+    To run: node jsonParse.js [JSON source file] [options: contact|address|account|customer] [number of lines to print]
     Result is printed out on console.
 */
 var fs = require('fs');
