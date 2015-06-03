@@ -139,6 +139,7 @@ function accountHeader(){
     'LastPaymentDate' + ',' +
     'LastPaymentAmount' + ',' +
     'LastPaymentAction' + ',' +
+    'Debtor_ClientId' + ',' +
     'Strategy_StrategyBand' + ',' +
     'PropensityToPayScore' + ',' +
     'Debtor_DebtorStatusId' + ',' +
@@ -179,6 +180,7 @@ function extractAccount(customer){
       contact.LastPaymentDate + ',' +
       contact.LastPaymentAmount + ',' +
       contact.LastPaymentAction + ',' +
+      contact.Debtor_ClientId + ',' +
       contact.Strategy_StrategyBand + ',' +
       contact.PropensityToPayScore + ',' +
       contact.Debtor_DebtorStatusId + ',' +
