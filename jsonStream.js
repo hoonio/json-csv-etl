@@ -1,7 +1,7 @@
 /*
     jsonStream.js
     Stream & stringify version of jsonParse.js
-    To run: node jsonParse.js [JSON source file] [options: contact|address|account|customer]
+    To run: node jsonStream.js [JSON source file] [options: contact|address|account|customer]
     Result is printed out on console.
 */
 var fs = require('fs'),
@@ -9,7 +9,7 @@ var fs = require('fs'),
 
 if (!process.argv[2]) {
   console.log('Please specify the source file in the following format:');
-  console.log('node jsonParse.js [JSON source file] [options: contact|address|account|customer]git');
+  console.log('node jsonStream.js [JSON source file] [options: contact|address|account|customer] > [output filename]');
   process.exit();
 }
 
