@@ -17,14 +17,17 @@
 </soap:Envelope>
 
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
-  <soap:Body>
-    <ns2:setCustomerAccountNumberResponse xmlns:ns2="http://www.telrock.com/tas">
-      <return>Account number updated for customer 4</return>
-    </ns2:setCustomerAccountNumberResponse>
-  </soap:Body>
+<soap:Body>
+<ns2:setCustomerAccountNumberResponse xmlns:ns2="http://www.telrock.com/tas">
+<return>Account number updated for customer 4</return>
+</ns2:setCustomerAccountNumberResponse>
+</soap:Body>
 </soap:Envelope>
 */
 
+// E4X needs to get rid of the <xml> header for security reasons...
+// See also: bug 336551, https://bugzilla.mozilla.org/show_bug.cgi?id=336551
+//
 // XML return does not contain header so don't need this line
 // responseXml = responseXml.replace(/^<\?xml\s+version\s*=\s*(["'])[^\1]+\1[^?]*\?>/, "");
 var response = new XML(responseXml);
@@ -43,14 +46,14 @@ default xml namespace = ws
 
 // Grab the body inside the SOAP response:
 //
-var responseBody = response.soap::Body.ns2::setCustomerAccountNumberResponse;
+var responseBody = response.soap::Body;
 
 // Use the following format to parse the response body, the payload of the SOAP response:
 //
 // var memberElement = responseBody.someElement;
 // var memberAttribute = responseBody.@someAttribute;
 //
-var responseText = responseBody.return;
+var responseText = responseBody;
 
 responseBody.removeNamespace(ws);
 responseBody.removeNamespace(soap);
@@ -58,4 +61,10 @@ responseBody.removeNamespace(soap);
 var xmlns = new Namespace("http://ws.cdyne.com/");
 responseBody.removeNamespace(xmlns);
 
-Alert(responseBody.toXMLString());
+if (statusCode == 200){
+  Alert(responseText.toXMLString());
+}
+else {
+  // expect statusCode == 50
+  Alert("setCustomerAccountNumber failed!");
+}
